@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <bean id="employeeDAO" class="ua.goit.java.dao.Impl.EmployeeDaoJdbc">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="employeeService" class="ua.goit.java.service.EmployeeService">
+        <property name="employeeDAO" ref="employeeDAO"/>
+    </bean>
+
+    <bean id="main" class="ua.goit.java.Main">
+        <property name="employeeService" ref="employeeService"/>
+    </bean>
+
+
+
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driver.class}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.user}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="minPoolSize" value="${jdbc.min.connection}"/>
+        <property name="maxPoolSize" value="${jdbc.max.connection}"/>
+        <property name="acquireIncrement" value="${jdbc.acquire.increment}"/>
+    </bean>
+
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:jdbc.properties"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="txManager" proxy-target-class="true"/>
+
+</beans>
