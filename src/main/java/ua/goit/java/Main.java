@@ -20,17 +20,17 @@ public class Main {
     }
 
     private void start() {
-        List<Phone> phoneList = new ArrayList<>();
-        phoneList.add(new Phone("050-213-15-36"));
-        phoneList.add(new Phone("098-258-25-52"));
+        //List<Phone> phoneList = new ArrayList<>();
+        //phoneList.add(new Phone("050-213-15-36"));
+        //phoneList.add(new Phone("098-258-25-52"));
         //Employee employee = new Employee("Smith", "John", new Date(), phoneList,  "manager", 2111.33);
         //employeeService.addEmployee(employee);
 
         //employeeService.remove(6);
         System.out.println("----------------------------------------");
-        employeeService.getEmployeeByName("Bob").forEach(System.out::println);
+        employeeService.getEmployeeByName("Ivan").forEach(System.out::println);
         System.out.println("----------------------------------------");
-        //employeeService.getAllEmployee().forEach(System.out::println);
+        employeeService.getAllEmployee().forEach(System.out::println);
 
     }
 

@@ -2,6 +2,7 @@ package ua.goit.java.model;
 
 
 import java.sql.Date;
+import java.util.Arrays;
 import java.util.List;
 
 public class Employee {
@@ -90,7 +91,7 @@ public class Employee {
                 ", name='" + name + '\'' +
                 ", birthDay=" + birthDay +
                 ", phone=" + phone +
-                ", role=" + role +
+                ", role=" + role.getTypeOfRole() +
                 ", salary=" + salary +
                 '}';
     }

@@ -59,30 +59,12 @@ public class EmployeeDaoJdbc implements EmployeeDAO {
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement
-                     ("SELECT * FROM employees NATURAL JOIN phones NATURAL JOIN roles WHERE name = ?")) {
+                     ("SELECT * FROM employees NATURAL JOIN roles WHERE name = ?")) {
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
 
-                Employee employee = new Employee();
-                employee.setEmpliyeeId(resultSet.getInt("employeeid"));
-                employee.setSurname(resultSet.getString("surname"));
-                employee.setName(resultSet.getString("name"));
-                employee.setBirthDay(resultSet.getDate("birthday"));
-
-
-                List<Phone> phones = new ArrayList<>();
-                Phone phone = new Phone();
-                phone.setPhoneId(resultSet.getInt("phoneid"));
-                phone.setPhoneNumber(resultSet.getString("phone_number"));
-                phones.add(phone);
-
-                employee.setPhone(phones);
-
-                Role role = new Role();
-                role.setRoleID(resultSet.getInt("roleid"));
-                role.setTypeOfRole(resultSet.getString("type_of_role"));
-                employee.setRole(role);
+                Employee employee = createEmployee(connection, resultSet);
 
                 employees.add(employee);
             }
@@ -94,16 +76,53 @@ public class EmployeeDaoJdbc implements EmployeeDAO {
         return employees;
     }
 
-    @Override
+    private Employee createEmployee(Connection connection, ResultSet resultSet) throws SQLException {
+        Employee employee = new Employee();
+        employee.setEmpliyeeId(resultSet.getInt("employeeid"));
+        employee.setSurname(resultSet.getString("surname"));
+        employee.setName(resultSet.getString("name"));
+        employee.setBirthDay(resultSet.getDate("birthday"));
+
+        employee.setPhone(getPhoneByEmployeeId(resultSet.getInt("employeeid"), connection));
+
+        Role role = new Role();
+        role.setRoleID(resultSet.getInt("roleid"));
+        role.setTypeOfRole(resultSet.getString("type_of_role"));
+        employee.setRole(role);
+        employee.setSalary(resultSet.getDouble("salary"));
+        return employee;
+    }
+
+    public List<Phone> getPhoneByEmployeeId(int id, Connection connection) {
+        List<Phone> phones = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM phones NATURAL JOIN employees WHERE employeeid = ?")) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Phone phone = new Phone();
+                phone.setPhoneId(resultSet.getInt("phoneid"));
+                phone.setPhoneNumber(resultSet.getString("phone_number"));
+                phones.add(phone);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Exception occurred while selecting phones ", e);
+            throw new RuntimeException(e);
+        }
+        return phones;
+    }
+
+
+        @Override
     public List<Employee> getAll() {
         List<Employee> employees = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT employeeid, surname, name, birthday, phone_number, type_of_role, salary " +
-                    "FROM employees NATURAL JOIN phones NATURAL JOIN roles");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM employees NATURAL JOIN roles");
             while (resultSet.next()) {
-                employees.add(createEmployee(resultSet));
+                employees.add(createEmployee(connection,resultSet));
             }
         } catch (SQLException e) {
             LOGGER.error("Exception occurred while connecting to DB ", e);
@@ -113,21 +132,7 @@ public class EmployeeDaoJdbc implements EmployeeDAO {
     }
 
 
-    private Employee createEmployee(ResultSet resultSet) throws SQLException {
-        List<Phone> phoneList = new ArrayList<>();
-        phoneList.add(new Phone("050-213-15-36"));
-        phoneList.add(new Phone("098-258-25-52"));
 
-        Employee employee = new Employee();
-        employee.setEmpliyeeId(resultSet.getInt("employeeid"));
-        employee.setSurname(resultSet.getString("surname"));
-        employee.setName(resultSet.getString("name"));
-        employee.setBirthDay(resultSet.getDate("birthday"));
-        //employee.setPhone(resultSet.getString("phone_number"));
-        //employee.setRole(resultSet.getInt("type_of_role"));
-        employee.setSalary(resultSet.getFloat("salary"));
-        return employee;
-    }
 
 
     public DataSource getDataSource() {

@@ -27,4 +27,12 @@ public class Phone {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    @Override
+    public String toString() {
+        return "Phone{" +
+                "phoneId=" + phoneId +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
+    }
 }
