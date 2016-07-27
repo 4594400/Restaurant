@@ -10,13 +10,13 @@ public class Employee {
     private String name;
     private Date birthDay;
     private List<Phone> phone;
-    private int role;
+    private Role role;
     private double salary;
 
     public Employee() {
     }
 
-    public Employee(String surname, String name, Date birthDay, List<Phone> phone, int role, double salary) {
+    public Employee(String surname, String name, Date birthDay, List<Phone> phone, Role role, double salary) {
 
         this.surname = surname;
         this.name = name;
@@ -66,11 +66,11 @@ public class Employee {
         this.phone = phone;
     }
 
-    public int getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(int role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -89,8 +89,8 @@ public class Employee {
                 ", surname='" + surname + '\'' +
                 ", name='" + name + '\'' +
                 ", birthDay=" + birthDay +
-                ", phone='" + phone + '\'' +
-                ", role='" + role + '\'' +
+                ", phone=" + phone +
+                ", role=" + role +
                 ", salary=" + salary +
                 '}';
     }
