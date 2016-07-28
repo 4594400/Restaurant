@@ -35,6 +35,7 @@ public class RoleDaoJdbc implements RoleDao {
     }
 
 
+    @Override
     public int selectRoleIdByTypeOfRole(String typeOfRole, Connection connection) {
         int result = -1;
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT roleid FROM roles WHERE type_of_role = ?")) {

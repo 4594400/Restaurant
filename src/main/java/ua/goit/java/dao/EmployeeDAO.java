@@ -5,10 +5,10 @@ import ua.goit.java.model.Employee;
 
 import java.util.List;
 
-public interface EmployeeDAO {
-    void save(Employee employee);
-    int delete(int id);
-    List<Employee> getByName(String name);
-    List<Employee> getAll();
+public interface EmployeeDao {
+    int insertEmployee(Employee employee);
+    int deleteEmployeeById(int id);
+    List<Employee> selectEmployeeByName(String name);
+    List<Employee> selectAllEmployee();
 
 }

@@ -20,11 +20,24 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <bean id="phoneDao" class="ua.goit.java.dao.Impl.PhoneDaoJdbc">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="phoneService" class="ua.goit.java.service.PhoneService">
+        <property name="phoneDao" ref="phoneDao"/>
+    </bean>
+
+    <bean id="phoneController" class="ua.goit.java.controller.PhoneController">
+        <property name="phoneService" ref="phoneService"/>
+    </bean>
+
 
 
 
     <bean id="main" class="ua.goit.java.Main">
         <property name="employeeController" ref="employeeController>"/>
+        <property name="phoneController" ref="phoneController"/>
     </bean>
 
 

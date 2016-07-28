@@ -4,10 +4,10 @@ package ua.goit.java;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ua.goit.java.controller.EmployeeController;
+import ua.goit.java.controller.PhoneController;
 import ua.goit.java.model.Employee;
 import ua.goit.java.model.Phone;
 import ua.goit.java.model.Role;
-import ua.goit.java.service.EmployeeService;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import java.util.List;
 
 public class Main {
     private EmployeeController employeeController;
+    private PhoneController phoneController;
 
     public static void main(String[] args) {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("application-context.xml");
@@ -30,12 +31,18 @@ public class Main {
         employeeController.printAllEmployee();
         employeeController.printResultDeletingEmployeeById(19);
         employeeController.printResultDeletingEmployeeById(21);
-        employeeController.printInsertedEmployee(createNewEmployee());
+        //employeeController.printInsertedEmployee(createNewEmployee());
+
+        phoneController.printInsertedPhoneByEmployeeId("099-888-88-88", 10);
 
     }
 
     public void setEmployeeController(EmployeeController employeeController) {
         this.employeeController = employeeController;
+    }
+
+    public void setPhoneController(PhoneController phoneController) {
+        this.phoneController = phoneController;
     }
 
     private Employee createNewEmployee(){

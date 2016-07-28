@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.util.List;
 
 public interface PhoneDao {
-    int insertPhonesByEmployeeId(Phone phone, Employee employee, Connection connection);
-    int insertPhonesByEmployeeId(List<Phone> phones, Employee employee, Connection connection);
+    int insertPhoneByEmployeeId(String phoneNumber, int employeeId);
+    int insertPhoneByEmployeeId(String phoneNumber, int employeeId, Connection connection);
+
+
 }

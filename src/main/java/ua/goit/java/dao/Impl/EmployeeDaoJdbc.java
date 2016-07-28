@@ -27,7 +27,8 @@ public class EmployeeDaoJdbc implements EmployeeDao {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement psEmployees = connection.prepareStatement
                      ("INSERT INTO employees (surname, name,  birthday, roleid, salary) VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
-             PreparedStatement psPhones = connection.prepareStatement("INSERT INTO phones (phone_number, employeeid) VALUES (?, ?)")) {
+             PreparedStatement psPhones = connection.prepareStatement
+                     ("INSERT INTO phones (phone_number, employeeid) VALUES (?, ?)")) {
 
             psEmployees.setString(1, employee.getSurname());
             psEmployees.setString(2, employee.getName());
