@@ -12,20 +12,23 @@ import java.util.List;
 
 public class PhoneDaoJdbc implements PhoneDao {
     @Override
-    public void save(Phone phone, Employee employee, Connection connection) {
+    public int insertPhonesByEmployeeId(Phone phone, Employee employee, Connection connection) {
+        int result = -1;
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO phones(phone_number, employeeid) VALUES (?,?)")) {
             preparedStatement.setString(1, phone.getPhoneNumber());
             preparedStatement.setInt(2, employee.getEmpliyeeId());
-            preparedStatement.executeUpdate();
+            result = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return result;
 
 
     }
 
     @Override
-    public void save(List<Phone> phones, Employee employee, Connection connection) {
+    public int insertPhonesByEmployeeId(List<Phone> phones, Employee employee, Connection connection) {
+        return 0;
 
     }
 }

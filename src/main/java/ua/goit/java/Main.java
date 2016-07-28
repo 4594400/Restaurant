@@ -3,38 +3,51 @@ package ua.goit.java;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ua.goit.java.controller.EmployeeController;
 import ua.goit.java.model.Employee;
 import ua.goit.java.model.Phone;
+import ua.goit.java.model.Role;
 import ua.goit.java.service.EmployeeService;
 
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Main {
-    private EmployeeService employeeService;
+    private EmployeeController employeeController;
+
     public static void main(String[] args) {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("application-context.xml");
         Main main = applicationContext.getBean(Main.class);
+
+
         main.start();
     }
 
     private void start() {
-        //List<Phone> phoneList = new ArrayList<>();
-        //phoneList.add(new Phone("050-213-15-36"));
-        //phoneList.add(new Phone("098-258-25-52"));
-        //Employee employee = new Employee("Smith", "John", new Date(), phoneList,  "manager", 2111.33);
-        //employeeService.addEmployee(employee);
 
-        //employeeService.remove(6);
-        System.out.println("----------------------------------------");
-        employeeService.getEmployeeByName("Ivan").forEach(System.out::println);
-        System.out.println("----------------------------------------");
-        employeeService.getAllEmployee().forEach(System.out::println);
+        employeeController.printEmployeeByName("Ivan");
+        employeeController.printAllEmployee();
+        employeeController.printResultDeletingEmployeeById(19);
+        employeeController.printResultDeletingEmployeeById(21);
+        employeeController.printInsertedEmployee(createNewEmployee());
 
     }
 
-    public void setEmployeeService(EmployeeService employeeService) {
-        this.employeeService = employeeService;
+    public void setEmployeeController(EmployeeController employeeController) {
+        this.employeeController = employeeController;
+    }
+
+    private Employee createNewEmployee(){
+        List<Phone> phones = new ArrayList<>();
+        phones.add(new Phone("050-213-15-36"));
+        phones.add(new Phone("050-522-15-22"));
+        phones.add(new Phone("098-775-15-77"));
+
+        Role role = new Role("manager");
+
+        Employee employee = new Employee("Torn", "Samuel", Date.valueOf("2015-02-03"), phones, role, 2155.5);
+
+        return employee;
     }
 }

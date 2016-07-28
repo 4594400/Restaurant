@@ -2,43 +2,42 @@ package ua.goit.java.service;
 
 
 import org.springframework.transaction.annotation.Transactional;
-import ua.goit.java.dao.EmployeeDAO;
-import ua.goit.java.dao.Impl.EmployeeDaoJdbc;
+import ua.goit.java.dao.EmployeeDao;
 import ua.goit.java.model.Employee;
 
 import java.util.List;
 
 public class EmployeeService {
-    private EmployeeDAO employeeDAO;
+    private EmployeeDao employeeDao;
 
     @Transactional
-    public void addEmployee(Employee employee) {
-        employeeDAO.save(employee);
+    public int insertEmployee(Employee employee) {
+       return employeeDao.insertEmployee(employee);
     }
     @Transactional
-    public int remove (int id) {
-        return employeeDAO.delete(id);
-    }
-
-    @Transactional
-    public List<Employee> getEmployeeByName(String name) {
-        return employeeDAO.getByName(name);
+    public int deleteEmployeeById(int id) {
+        return employeeDao.deleteEmployeeById(id);
     }
 
     @Transactional
-    public List<Employee> getAllEmployee() {
-        return employeeDAO.getAll();
+    public List<Employee> selectEmployeeByName(String name) {
+        return employeeDao.selectEmployeeByName(name);
+    }
+
+    @Transactional
+    public List<Employee> selectAllEmployee() {
+        return employeeDao.selectAllEmployee();
     }
 
 
 
 
 
-    public EmployeeDAO getEmployeeDAO() {
-        return employeeDAO;
+    public EmployeeDao getEmployeeDao() {
+        return employeeDao;
     }
 
-    public void setEmployeeDAO(EmployeeDAO employeeDAO) {
-        this.employeeDAO = employeeDAO;
+    public void setEmployeeDao(EmployeeDao employeeDao) {
+        this.employeeDao = employeeDao;
     }
 }

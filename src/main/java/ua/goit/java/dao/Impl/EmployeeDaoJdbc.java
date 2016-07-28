@@ -3,7 +3,7 @@ package ua.goit.java.dao.Impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ua.goit.java.dao.EmployeeDAO;
+import ua.goit.java.dao.EmployeeDao;
 import ua.goit.java.model.Employee;
 import ua.goit.java.model.Phone;
 import ua.goit.java.model.Role;
@@ -13,48 +13,68 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmployeeDaoJdbc implements EmployeeDAO {
+public class EmployeeDaoJdbc implements EmployeeDao {
     public static final Logger LOGGER = LoggerFactory.getLogger(EmployeeDaoJdbc.class);
 
     private DataSource dataSource;
-    private PhoneDaoJdbc phoneDaoJdbc;
+    //private PhoneDaoJdbc phoneDaoJdbc = new PhoneDaoJdbc();
+    private RoleDaoJdbc roleDaoJdbc = new RoleDaoJdbc();
 
     @Override
-    public void save(Employee employee) {
+    public int insertEmployee(Employee employee) {
+        int result;
+
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement
-                     ("INSERT INTO employees (surname, name,  birthday, roleid, salary) VALUES (?,?,?,?,?)")) {
-            preparedStatement.setString(1, employee.getSurname());
-            preparedStatement.setString(2, employee.getName());
-            preparedStatement.setDate(3, employee.getBirthDay());
-            //preparedStatement.setInt(2, employee.getRole());
-            preparedStatement.executeUpdate();
-            phoneDaoJdbc.save(employee.getPhone().get(0), employee, connection);
+             PreparedStatement psEmployees = connection.prepareStatement
+                     ("INSERT INTO employees (surname, name,  birthday, roleid, salary) VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+             PreparedStatement psPhones = connection.prepareStatement("INSERT INTO phones (phone_number, employeeid) VALUES (?, ?)")) {
+
+            psEmployees.setString(1, employee.getSurname());
+            psEmployees.setString(2, employee.getName());
+            psEmployees.setDate(3, employee.getBirthDay());
+            psEmployees.setInt(4, roleDaoJdbc.selectRoleIdByTypeOfRole(employee.getRole().getTypeOfRole(), connection));
+            psEmployees.setDouble(5, employee.getSalary());
+            result = psEmployees.executeUpdate();
+
+            ResultSet generatedKeysResultSet = psEmployees.getGeneratedKeys();
+            generatedKeysResultSet.next();
+            int generatedId = generatedKeysResultSet.getInt(1);
+
+            for (int i = 0; i < employee.getPhone().size(); i++) {
+                psPhones.setString(1, employee.getPhone().get(i).getPhoneNumber());
+                psPhones.setLong(2, generatedId);
+                psPhones.addBatch();
+            }
+            psPhones.executeBatch();
+
+
         } catch (SQLException e) {
             LOGGER.error("Exception occurred while saving employee ", e);
             throw new RuntimeException(e);
         }
-
+        return result;
     }
 
+
+
+
+
+//---------------------------------DELETE--------------------------------------------------------------------------------------
     @Override
-    public int delete(int id) {
+    public int deleteEmployeeById(int id) {
         try (Connection connection = dataSource.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM employees WHERE employeeid = ?")) {
             preparedStatement.setInt(1, id);
             int result = preparedStatement.executeUpdate();
-            System.out.println(result + " employee with id: " + id + " was deleted");
-
             return result;
         } catch (SQLException e) {
-            LOGGER.error("Exception occurred while connecting to DB ", e);
+            LOGGER.error("Exception occurred while deleting by id", e);
             throw new RuntimeException(e);
         }
-
     }
-
+//------------------------------SELECT BY NAME----------------------------------------------------------------------------------
     @Override
-    public List<Employee> getByName(String name) {
+    public List<Employee> selectEmployeeByName(String name) {
         List<Employee> employees = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection();
@@ -70,7 +90,7 @@ public class EmployeeDaoJdbc implements EmployeeDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.error("Exception occurred while connecting to DB ", e);
+            LOGGER.error("Exception occurred while selecting by name ", e);
             throw new RuntimeException(e);
         }
         return employees;
@@ -83,7 +103,7 @@ public class EmployeeDaoJdbc implements EmployeeDAO {
         employee.setName(resultSet.getString("name"));
         employee.setBirthDay(resultSet.getDate("birthday"));
 
-        employee.setPhone(getPhoneByEmployeeId(resultSet.getInt("employeeid"), connection));
+        employee.setPhone(selectPhoneByEmployeeId(resultSet.getInt("employeeid"), connection));
 
         Role role = new Role();
         role.setRoleID(resultSet.getInt("roleid"));
@@ -93,7 +113,7 @@ public class EmployeeDaoJdbc implements EmployeeDAO {
         return employee;
     }
 
-    public List<Phone> getPhoneByEmployeeId(int id, Connection connection) {
+    public List<Phone> selectPhoneByEmployeeId(int id, Connection connection) {
         List<Phone> phones = new ArrayList<>();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM phones NATURAL JOIN employees WHERE employeeid = ?")) {
@@ -107,15 +127,15 @@ public class EmployeeDaoJdbc implements EmployeeDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.error("Exception occurred while selecting phones ", e);
+            LOGGER.error("Exception occurred while selecting phones by employee id ", e);
             throw new RuntimeException(e);
         }
         return phones;
     }
 
-
+//------------------------------------- SELECT ALL EMPLOYEE ---------------------------------------------------------------
         @Override
-    public List<Employee> getAll() {
+    public List<Employee> selectAllEmployee() {
         List<Employee> employees = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection();
@@ -125,7 +145,7 @@ public class EmployeeDaoJdbc implements EmployeeDAO {
                 employees.add(createEmployee(connection,resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("Exception occurred while connecting to DB ", e);
+            LOGGER.error("Exception occurred while selecting all employee ", e);
             throw new RuntimeException(e);
         }
         return employees;
@@ -133,7 +153,7 @@ public class EmployeeDaoJdbc implements EmployeeDAO {
 
 
 
-
+//----------------------------  GETTER AND SETTER ---------------------------------------------------------------------------
 
     public DataSource getDataSource() {
         return dataSource;

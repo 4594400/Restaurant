@@ -8,6 +8,10 @@ public class Role {
     public Role() {
     }
 
+    public Role(String typeOfRole) {
+        this.typeOfRole = typeOfRole;
+    }
+
     public int getRoleID() {
         return roleID;
     }

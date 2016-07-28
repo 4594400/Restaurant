@@ -2,7 +2,6 @@ package ua.goit.java.model;
 
 
 import java.sql.Date;
-import java.util.Arrays;
 import java.util.List;
 
 public class Employee {
