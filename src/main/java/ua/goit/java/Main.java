@@ -36,7 +36,10 @@ public class Main {
         //phoneController.printResultDeletedPhoneById(60);
 
 
-        dishController.printInsertedDish(createDish());
+        //dishController.printInsertedDish(createDish());
+        //dishController.printResultDeletingDishById(24);
+        //dishController.printDishByName("Пицца 4 сыра");
+        dishController.printAllDishes();
 
     }
 
@@ -60,13 +63,10 @@ public class Main {
 
         Role role = new Role("manager");
 
-        Employee employee = new Employee("Torn", "Samuel", Date.valueOf("2015-02-03"), phones, role, 2155.5);
-
-        return employee;
+        return new Employee("Torn", "Samuel", Date.valueOf("2015-02-03"), phones, role, 2155.5);
     }
 
     private Dish createDish() {
-        Dish dish = new Dish("Бифштекс", new DishCategory("Мясные блюда"), 120.50, 200);
-        return dish;
+        return new Dish("Бифштекс", new DishCategory("Мясные блюда"), 120.50, 200);
     }
 }

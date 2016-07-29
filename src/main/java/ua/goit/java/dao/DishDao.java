@@ -7,6 +7,6 @@ import java.util.List;
 public interface DishDao {
     int insertDish(Dish dish);
     int deleteDishById(int id);
-    List<Dish> selectByName(String name);
+    List<Dish> selectDishByName(String name);
     List<Dish> selectAllDishes();
 }
