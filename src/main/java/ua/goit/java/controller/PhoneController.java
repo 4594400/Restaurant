@@ -11,6 +11,13 @@ public class PhoneController {
         System.out.println(phoneService.insertPhoneByEmployeeId(phoneNumber, employeeId) + " phoneNumber: " + phoneNumber + " was added to employee with id: " + employeeId);
     }
 
+    public void printResultDeletedPhoneById(int id) {
+        System.out.println("-------------------- printResultDeletedPhoneById --------------------------------------------------------------------------------------------------");
+        System.out.println(phoneService.deletePhoneById(id) + " phone with id = " + id + " was deleted");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+    }
+
 
     public PhoneService getPhoneService() {
         return phoneService;

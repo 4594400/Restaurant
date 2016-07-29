@@ -50,6 +50,31 @@ public class PhoneDaoJdbc implements PhoneDao {
         return result;
     }
 
+    //---------------------------------DELETE--------------------------------------------------------------------------------------
+    @Override
+    public int deletePhoneById(int id) {
+        int result;
+        try(Connection connection = dataSource.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM phones WHERE phoneid = ?")) {
+            preparedStatement.setInt(1, id);
+            result =preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.error("Exception occurred while deleting phone by id ", e);
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+
+
+
+
+
+
+
+
+
+
     public DataSource getDataSource() {
         return dataSource;
     }

@@ -20,6 +20,7 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+
     <bean id="phoneDao" class="ua.goit.java.dao.Impl.PhoneDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
@@ -33,11 +34,33 @@
     </bean>
 
 
+    <bean id="dishCategoryDao" class="ua.goit.java.dao.Impl.DishCategoryDaoJdbc">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
+
+    <bean id="dishDao" class="ua.goit.java.dao.Impl.DishDaoJdbc">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="dishService" class="ua.goit.java.service.DishService">
+        <property name="dishDao" ref="dishDao"/>
+    </bean>
+
+    <bean id="dishController" class="ua.goit.java.controller.DishController">
+        <property name="dishService" ref="dishService"/>
+    </bean>
+
+
+
+
 
 
     <bean id="main" class="ua.goit.java.Main">
         <property name="employeeController" ref="employeeController>"/>
         <property name="phoneController" ref="phoneController"/>
+        <property name="dishController" ref="dishController"/>
     </bean>
 
 

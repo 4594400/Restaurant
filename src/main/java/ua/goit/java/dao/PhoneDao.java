@@ -10,6 +10,7 @@ import java.util.List;
 public interface PhoneDao {
     int insertPhoneByEmployeeId(String phoneNumber, int employeeId);
     int insertPhoneByEmployeeId(String phoneNumber, int employeeId, Connection connection);
+    int deletePhoneById(int id);
 
 
 }

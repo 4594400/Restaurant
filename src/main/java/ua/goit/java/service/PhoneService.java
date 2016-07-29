@@ -10,6 +10,10 @@ public class PhoneService {
         return phoneDao.insertPhoneByEmployeeId(phoneNumber, employeeId);
     }
 
+    public int deletePhoneById(int id) {
+        return phoneDao.deletePhoneById(id);
+    }
+
 
     public PhoneDao getPhoneDao() {
         return phoneDao;
