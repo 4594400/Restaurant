@@ -1,0 +1,35 @@
+package ua.goit.java.controller;
+
+import ua.goit.java.model.Menu;
+import ua.goit.java.service.MenuService;
+
+public class MenuController {
+    private MenuService menuService;
+
+    public void printInsertedMenu(Menu menu) {
+        System.out.println(menuService.insertMenu(menu) + " menu was inserted");
+        System.out.println(menu.toString());
+    }
+
+    public void printResultDeletingMenuById(int id) {
+        System.out.println("-------------------- printResultDeletingMenuById --------------------------------------------------------------------------------------------------");
+        System.out.println(menuService.deleteMenuById(id) + " menu was deleted");
+        System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------");
+    }
+
+    public void printMenuByName(String name) {
+        System.out.println("-------------------- printMenuByName with name: " + name + " --------------------------------------------------------------------------------------");
+        System.out.println(menuService.selectMenuByName(name));
+        System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------");
+    }
+
+
+
+
+
+
+
+    public void setMenuService(MenuService menuService) {
+        this.menuService = menuService;
+    }
+}

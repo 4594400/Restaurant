@@ -1,25 +1,8 @@
 package ua.goit.java.service;
 
-import ua.goit.java.dao.PhoneDao;
-import ua.goit.java.model.Employee;
+public interface PhoneService {
 
-public class PhoneService {
-    private PhoneDao phoneDao;
+    int insertPhoneByEmployeeId(String phoneNumber, int employeeId);
 
-    public int insertPhoneByEmployeeId(String phoneNumber, int employeeId){
-        return phoneDao.insertPhoneByEmployeeId(phoneNumber, employeeId);
-    }
-
-    public int deletePhoneById(int id) {
-        return phoneDao.deletePhoneById(id);
-    }
-
-
-    public PhoneDao getPhoneDao() {
-        return phoneDao;
-    }
-
-    public void setPhoneDao(PhoneDao phoneDao) {
-        this.phoneDao = phoneDao;
-    }
+    int deletePhoneById(int id);
 }

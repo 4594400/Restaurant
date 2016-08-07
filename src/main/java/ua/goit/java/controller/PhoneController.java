@@ -1,7 +1,7 @@
 package ua.goit.java.controller;
 
 
-import ua.goit.java.model.Employee;
+import ua.goit.java.service.Impl.PhoneServiceImpl;
 import ua.goit.java.service.PhoneService;
 
 public class PhoneController {
@@ -19,11 +19,11 @@ public class PhoneController {
     }
 
 
-    public PhoneService getPhoneService() {
-        return phoneService;
+    public void setPhoneService(PhoneService phoneService) {
+        this.phoneService = phoneService;
     }
 
-    public void setPhoneService(PhoneService phoneService) {
+    public void setPhoneService(PhoneServiceImpl phoneService) {
         this.phoneService = phoneService;
     }
 }

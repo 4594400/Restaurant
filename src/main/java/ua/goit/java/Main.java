@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ua.goit.java.controller.DishController;
 import ua.goit.java.controller.EmployeeController;
+import ua.goit.java.controller.MenuController;
 import ua.goit.java.controller.PhoneController;
 import ua.goit.java.model.*;
 
@@ -16,6 +17,7 @@ public class Main {
     private EmployeeController employeeController;
     private PhoneController phoneController;
     private DishController dishController;
+    private MenuController menuController;
 
     public static void main(String[] args) {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("application-context.xml");
@@ -39,8 +41,24 @@ public class Main {
         //dishController.printInsertedDish(createDish());
         //dishController.printResultDeletingDishById(24);
         //dishController.printDishByName("Пицца 4 сыра");
-        dishController.printAllDishes();
+        //dishController.printAllDishes();
 
+
+        menuController.printInsertedMenu(createMenu());
+        menuController.printMenuByName("Пьянка");
+
+    }
+
+    private Menu createMenu() {
+        Menu menu = new Menu();
+        List<Dish> dishes = new ArrayList<>();
+        dishes.add(new Dish("Бифштекс", new DishCategory("Мясные блюда"), 120.50, 200, null));
+        dishes.add(new Dish("Рыба под соусом", new DishCategory("Рыба"), 150, 130, null));
+
+        menu.setMenuName("Пьянка2");
+        menu.setDishList(dishes);
+
+        return menu;
     }
 
     public void setEmployeeController(EmployeeController employeeController) {
@@ -55,6 +73,10 @@ public class Main {
         this.dishController = dishController;
     }
 
+    public void setMenuController(MenuController menuController) {
+        this.menuController = menuController;
+    }
+
     private Employee createNewEmployee(){
         List<Phone> phones = new ArrayList<>();
         phones.add(new Phone("050-213-15-36"));
@@ -67,6 +89,6 @@ public class Main {
     }
 
     private Dish createDish() {
-        return new Dish("Бифштекс", new DishCategory("Мясные блюда"), 120.50, 200);
+        return new Dish("Бифштекс", new DishCategory("Мясные блюда"), 120.50, 200, null);
     }
 }

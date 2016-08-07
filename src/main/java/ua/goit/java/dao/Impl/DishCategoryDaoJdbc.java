@@ -1,5 +1,6 @@
 package ua.goit.java.dao.Impl;
 
+import jdk.nashorn.internal.ir.WhileNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ua.goit.java.dao.DishCategoryDao;
@@ -44,6 +45,39 @@ public class DishCategoryDaoJdbc implements DishCategoryDao {
             }
         } catch (SQLException e) {
             LOGGER.error("Exception occurred while selectingDish category by dishCategoryId ", e);
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    @Override
+    public String selectDishCategoryNameByDishCategoryId(int dishcategoryID) {
+        String result="";
+        try (Connection connection = dataSource.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT dishcategory_name FROM dishcategories WHERE dishcategoryid = ?")) {
+        preparedStatement.setInt(1, dishcategoryID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result = resultSet.getString("dishcategory_name");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Exception occurred while selecting DishCategoryName By DishCategoryId ", e);
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    @Override
+    public String selectDishCategoryNameByDishCategoryId(int dishcategoryID, Connection connection) {
+        String result="";
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT dishcategory_name FROM dishcategories WHERE dishcategoryid = ?")) {
+            preparedStatement.setInt(1, dishcategoryID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result = resultSet.getString("dishcategory_name");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Exception occurred while selecting DishCategoryName By DishCategoryId ", e);
             throw new RuntimeException(e);
         }
         return result;

@@ -1,43 +1,24 @@
 package ua.goit.java.service;
 
-
-import org.springframework.transaction.annotation.Transactional;
-import ua.goit.java.dao.EmployeeDao;
 import ua.goit.java.model.Employee;
 
 import java.util.List;
 
-public class EmployeeService {
-    private EmployeeDao employeeDao;
 
-    @Transactional
-    public int insertEmployee(Employee employee) {
-       return employeeDao.insertEmployee(employee);
-    }
-    @Transactional
-    public int deleteEmployeeById(int id) {
-        return employeeDao.deleteEmployeeById(id);
-    }
+public interface EmployeeService {
 
-    @Transactional
-    public List<Employee> selectEmployeeByName(String name) {
-        return employeeDao.selectEmployeeByName(name);
-    }
+    int insertEmployee(Employee employee);
 
-    @Transactional
-    public List<Employee> selectAllEmployee() {
-        return employeeDao.selectAllEmployee();
-    }
+
+    int deleteEmployeeById(int id);
+
+
+    List<Employee> selectEmployeeByName(String name);
+
+
+    List<Employee> selectAllEmployee();
 
 
 
 
-
-    public EmployeeDao getEmployeeDao() {
-        return employeeDao;
-    }
-
-    public void setEmployeeDao(EmployeeDao employeeDao) {
-        this.employeeDao = employeeDao;
-    }
 }

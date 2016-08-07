@@ -4,6 +4,7 @@ package ua.goit.java.dao.Impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ua.goit.java.dao.DishDao;
+import ua.goit.java.dao.MenuDao;
 import ua.goit.java.model.Dish;
 import ua.goit.java.model.DishCategory;
 
@@ -16,6 +17,7 @@ public class DishDaoJdbc implements DishDao{
     public static final Logger LOGGER = LoggerFactory.getLogger(DishDaoJdbc.class);
     private DataSource dataSource;
     private DishCategoryDaoJdbc dishCategoryDaoJdbc = new DishCategoryDaoJdbc();
+    private MenuDao menuDaoJdbc;
 
     //------------------------------ INSERT -------------------------------------------------------------------------------------
     @Override
@@ -30,7 +32,7 @@ public class DishDaoJdbc implements DishDao{
             preparedStatement.setDouble(4, dish.getWeight());
             result = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.error("Exception occurred while selectingDish category by dishCategoryId ", e);
+            LOGGER.error("Exception occurred while inserting dish ", e);
             throw new RuntimeException(e);
         }
         return result;
@@ -97,12 +99,42 @@ public class DishDaoJdbc implements DishDao{
         }
         return dishes;
     }
+    //------------------------------------- SELECT DISHES BY MENU ID ---------------------------------------------------------------
+    @Override
+    public List<Dish> selectDishesByMenuId(int menuID, Connection connection) {
+        List<Dish> dishes = new ArrayList<>();
+        try(PreparedStatement psDishes = connection.prepareStatement
+                ("SELECT * FROM menu_dishes NATURAL JOIN menu NATURAL JOIN dishes WHERE menuid = ?")) {
+            psDishes.setInt(1, menuID);
+            ResultSet resultSet = psDishes.executeQuery();
+            while (resultSet.next()) {
+                Dish dish = new Dish();
+                dish.setDishId(resultSet.getInt("dishID"));
+                dish.setDishName(resultSet.getString("dish_name"));
 
+                dish.setDishCategory(createDishCategory(connection, resultSet));
 
+                dish.setPrice(resultSet.getDouble("price"));
+                dish.setWeight(resultSet.getDouble("weight"));
 
+                dish.setMenuList(menuDaoJdbc.selectMenuByDishId(resultSet.getInt("dishID"), connection));
 
+                dishes.add(dish);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Exception occurred while selecting DISHES BY MENU ID ", e);
+            throw new RuntimeException(e);
+        }
+        return dishes;
+    }
 
+    private DishCategory createDishCategory(Connection connection, ResultSet resultSet) throws SQLException {
+        DishCategory dishCategory = new DishCategory();
+        dishCategory.setDishcategoryId(resultSet.getInt("dishcategoryID"));
+        dishCategory.setDishcategoryName(dishCategoryDaoJdbc.selectDishCategoryNameByDishCategoryId(resultSet.getInt("dishcategoryID"), connection));
+        return dishCategory;
 
+    }
 
 
     public DataSource getDataSource() {
@@ -111,5 +143,9 @@ public class DishDaoJdbc implements DishDao{
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    public void setMenuDaoJdbc(MenuDao menuDaoJdbc) {
+        this.menuDaoJdbc = menuDaoJdbc;
     }
 }

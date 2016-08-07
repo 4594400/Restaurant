@@ -3,8 +3,7 @@ package ua.goit.java.controller;
 
 import ua.goit.java.model.Dish;
 import ua.goit.java.service.DishService;
-
-import java.util.List;
+import ua.goit.java.service.Impl.DishServiceImpl;
 
 public class DishController {
     private DishService dishService;
@@ -16,7 +15,7 @@ public class DishController {
 
     public void printResultDeletingDishById(int id) {
         System.out.println("-------------------- printResultDeletingDishById --------------------------------------------------------------------------------------------------");
-        System.out.println((dishService.deleteDishById(id) + " dish was deleted"));
+        System.out.println(dishService.deleteDishById(id) + " dish was deleted");
         System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------");
     }
 
@@ -32,14 +31,6 @@ public class DishController {
         System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------");
     }
 
-
-
-
-
-
-    public DishService getDishService() {
-        return dishService;
-    }
 
     public void setDishService(DishService dishService) {
         this.dishService = dishService;

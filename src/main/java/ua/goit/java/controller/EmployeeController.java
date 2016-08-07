@@ -3,6 +3,7 @@ package ua.goit.java.controller;
 
 import ua.goit.java.model.Employee;
 import ua.goit.java.service.EmployeeService;
+import ua.goit.java.service.Impl.EmployeeServiceImpl;
 
 public class EmployeeController {
     private EmployeeService employeeService;
@@ -32,16 +33,11 @@ public class EmployeeController {
     }
 
 
-
-
-
-
-
-    public EmployeeService getEmployeeService() {
-        return employeeService;
+    public void setEmployeeService(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
 
-    public void setEmployeeService(EmployeeService employeeService) {
+    public void setEmployeeService(EmployeeServiceImpl employeeService) {
         this.employeeService = employeeService;
     }
 }

@@ -7,7 +7,7 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean id="employeeService" class="ua.goit.java.service.EmployeeService">
+    <bean id="employeeService" class="ua.goit.java.service.Impl.EmployeeServiceImpl">
         <property name="employeeDao" ref="employeeDao"/>
     </bean>
 
@@ -25,7 +25,7 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean id="phoneService" class="ua.goit.java.service.PhoneService">
+    <bean id="phoneService" class="ua.goit.java.service.Impl.PhoneServiceImpl">
         <property name="phoneDao" ref="phoneDao"/>
     </bean>
 
@@ -42,14 +42,30 @@
 
     <bean id="dishDao" class="ua.goit.java.dao.Impl.DishDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
+        <property name="menuDaoJdbc" ref="menuDao"/>
     </bean>
 
-    <bean id="dishService" class="ua.goit.java.service.DishService">
+    <bean id="dishService" class="ua.goit.java.service.Impl.DishServiceImpl">
         <property name="dishDao" ref="dishDao"/>
     </bean>
 
     <bean id="dishController" class="ua.goit.java.controller.DishController">
         <property name="dishService" ref="dishService"/>
+    </bean>
+
+
+    <bean id="menuDao" class="ua.goit.java.dao.Impl.MenuDaoJdbc">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="dishDaoJdbc" ref="dishDao"/>
+
+    </bean>
+
+    <bean id="menuService" class="ua.goit.java.service.Impl.MenuServiceImpl">
+        <property name="menuDao" ref="menuDao"/>
+    </bean>
+
+    <bean id="menuController" class="ua.goit.java.controller.MenuController">
+        <property name="menuService" ref="menuService"/>
     </bean>
 
 
@@ -61,6 +77,7 @@
         <property name="employeeController" ref="employeeController>"/>
         <property name="phoneController" ref="phoneController"/>
         <property name="dishController" ref="dishController"/>
+        <property name="menuController" ref="menuController"/>
     </bean>
 
 
