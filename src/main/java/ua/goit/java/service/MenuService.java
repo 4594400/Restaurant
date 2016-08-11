@@ -11,6 +11,6 @@ public interface MenuService {
     int deleteMenuById(int menuId);
     List<Menu> selectMenuByName(String name);
     List<Menu> selectAllMenu();
-    int insertDishToMenu(Dish dish);
-    int deleteDishFromMenuById(int dishId);
+    int insertDishToMenu(Menu menu, Dish dish);
+    int deleteDishFromMenu(Menu menu, Dish dish);
 }

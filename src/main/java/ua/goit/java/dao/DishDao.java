@@ -11,5 +11,6 @@ public interface DishDao {
     List<Dish> selectDishByName(String name);
     List<Dish> selectAllDishes();
 
+    List<Dish> selectDishesByMenuId(int menuID);
     List<Dish> selectDishesByMenuId(int menuID, Connection connection);
 }

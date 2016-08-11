@@ -74,6 +74,8 @@
 
 
     <bean id="main" class="ua.goit.java.Main">
+        <property name="dishService" ref="dishService"/>
+        <property name="menuService" ref="menuService"/>
         <property name="employeeController" ref="employeeController>"/>
         <property name="phoneController" ref="phoneController"/>
         <property name="dishController" ref="dishController"/>

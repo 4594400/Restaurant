@@ -9,10 +9,7 @@ import ua.goit.java.model.Dish;
 import ua.goit.java.model.Menu;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,18 +51,21 @@ public class MenuDaoJdbc implements MenuDao{
     //------------------------------SELECT BY NAME-------------------------------------------------------------------------------
     @Override
     public List<Menu> selectMenuByName(String name) {
+        Menu menu;
         List<Menu> menus = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM menu WHERE menu_name = ?")) {
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                Menu menu = new Menu();
+                menu = new Menu();
                 menu.setMenuId(resultSet.getInt("menuID"));
                 menu.setMenuName(resultSet.getString("menu_name"));
-                menu.setDishList(dishDaoJdbc.selectDishesByMenuId(resultSet.getInt("menuID"), connection));
                 menus.add(menu);
             }
+
+            setListOfDishesIntoMenu(menus, connection);
+
         } catch (SQLException e) {
             LOGGER.error("Exception occurred while selecting menu by name ", e);
             throw new RuntimeException(e);
@@ -76,21 +76,55 @@ public class MenuDaoJdbc implements MenuDao{
     //------------------------------------- SELECT ALL MENU ---------------------------------------------------------------------
     @Override
     public List<Menu> selectAllMenu() {
-        return null;
+        List<Menu> menus = new ArrayList<>();
+        try(Connection connection = dataSource.getConnection();
+        Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM menu");
+            while (resultSet.next()) {
+                Menu menu = createMenu(resultSet);
+                menus.add(menu);
+            }
+
+            setListOfDishesIntoMenu(menus,connection);
+        } catch (SQLException e) {
+            LOGGER.error("Exception occurred while selecting all menu  ", e);
+            throw new RuntimeException(e);
+        }
+        return menus;
     }
 
-    //------------------------------------- SELECT ALL DISHES -------------------------------------------------------------------
+    //------------------------------------- INSERT DISH TO MENU -------------------------------------------------------------------
     @Override
-    public int insertDishToMenu(Dish dish) {
-        return 0;
+    public int insertDishToMenu(Menu menu, Dish dish) {
+        int result;
+        try(Connection connection = dataSource.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO menu_dishes (menuid, dishid) VALUES (?,?)")) {
+            preparedStatement.setInt(1, menu.getMenuId());
+            preparedStatement.setInt(2, dish.getDishId());
+            result = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.error("Exception occurred while inserting dish into menu ", e);
+            throw new RuntimeException(e);
+        }
+        return result;
     }
 
-    //------------------------------------- SELECT ALL DISHES -------------------------------------------------------------------
+    //------------------------------------- DELETE DISH FROM MENU -------------------------------------------------------------------
     @Override
-    public int deleteDishFromMenuById(int dishId) {
-        return 0;
-    }
+    public int deleteDishFromMenu(Menu menu, Dish dish) {
+        int result;
+        try(Connection connection = dataSource.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM menu_dishes WHERE menuid = ? AND dishid = ?")) {
+            preparedStatement.setInt(1, menu.getMenuId());
+            preparedStatement.setInt(2, dish.getDishId());
+            result = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.error("Exception occurred while deleting dish from menu ", e);
+            throw new RuntimeException(e);
+        }
 
+        return result;
+    }
 
 //------------------------------------- SELECT MENU BY DISHES ID ---------------------------------------------------------------
 
@@ -101,19 +135,37 @@ public class MenuDaoJdbc implements MenuDao{
             psMenu.setInt(1, dishID);
             ResultSet resultSet = psMenu.executeQuery();
             while (resultSet.next()) {
-                Menu menu = new Menu();
-                menu.setMenuId(resultSet.getInt("menuID"));
-                menu.setMenuName(resultSet.getString("menu_name"));
-                menu.setDishList(dishDaoJdbc.selectDishesByMenuId(resultSet.getInt("menuID"), connection));
+                Menu menu = createMenu(resultSet);
                 menus.add(menu);
             }
+
+            setListOfDishesIntoMenu(menus, connection);
         } catch (SQLException e) {
             LOGGER.error("Exception occurred while selecting menu by dish Id ", e);
             throw new RuntimeException(e);
         }
         return menus;
     }
+    //------------------------------------- CREATE MENU ---------------------------------------------------------------
+    private Menu createMenu(ResultSet resultSet) throws SQLException {
+        Menu menu = new Menu();
+        menu.setMenuId(resultSet.getInt("menuID"));
+        menu.setMenuName(resultSet.getString("menu_name"));
+        return menu;
+    }
 
+    //------------------------------------- SET LIST OF DISHES INTO MENU ---------------------------------------------------------------
+
+    private List<Menu> setListOfDishesIntoMenu(List<Menu> menus, Connection connection) {
+        for (int i = 0; i < menus.size(); i++) {
+            int id = menus.get(i).getMenuId();
+            menus.get(i).setDishList(dishDaoJdbc.selectDishesByMenuId(id, connection));
+        }
+        return menus;
+    }
+
+
+    //------------------------------------- SETTERS ---------------------------------------------------------------
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }

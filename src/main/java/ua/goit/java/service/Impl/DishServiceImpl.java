@@ -36,9 +36,11 @@ public class DishServiceImpl implements ua.goit.java.service.DishService {
     }
 
 
-
-
-
+    @Override
+    @Transactional
+    public List<Dish> selectDishesByMenuId(int menuId) {
+        return dishDao.selectDishesByMenuId(menuId);
+    }
 
     public void setDishDao(DishDao dishDao) {
         this.dishDao = dishDao;

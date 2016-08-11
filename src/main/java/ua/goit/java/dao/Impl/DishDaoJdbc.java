@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DishDaoJdbc implements DishDao{
+
     public static final Logger LOGGER = LoggerFactory.getLogger(DishDaoJdbc.class);
     private DataSource dataSource;
     private DishCategoryDaoJdbc dishCategoryDaoJdbc = new DishCategoryDaoJdbc();
@@ -100,25 +101,17 @@ public class DishDaoJdbc implements DishDao{
         return dishes;
     }
     //------------------------------------- SELECT DISHES BY MENU ID ---------------------------------------------------------------
+
     @Override
-    public List<Dish> selectDishesByMenuId(int menuID, Connection connection) {
+    public List<Dish> selectDishesByMenuId(int menuID) {
         List<Dish> dishes = new ArrayList<>();
-        try(PreparedStatement psDishes = connection.prepareStatement
+        try(Connection connection = dataSource.getConnection();
+                PreparedStatement psDishes = connection.prepareStatement
                 ("SELECT * FROM menu_dishes NATURAL JOIN menu NATURAL JOIN dishes WHERE menuid = ?")) {
             psDishes.setInt(1, menuID);
             ResultSet resultSet = psDishes.executeQuery();
             while (resultSet.next()) {
-                Dish dish = new Dish();
-                dish.setDishId(resultSet.getInt("dishID"));
-                dish.setDishName(resultSet.getString("dish_name"));
-
-                dish.setDishCategory(createDishCategory(connection, resultSet));
-
-                dish.setPrice(resultSet.getDouble("price"));
-                dish.setWeight(resultSet.getDouble("weight"));
-
-                dish.setMenuList(menuDaoJdbc.selectMenuByDishId(resultSet.getInt("dishID"), connection));
-
+                Dish dish = createDish(connection, resultSet);
                 dishes.add(dish);
             }
         } catch (SQLException e) {
@@ -128,6 +121,41 @@ public class DishDaoJdbc implements DishDao{
         return dishes;
     }
 
+    @Override
+    public List<Dish> selectDishesByMenuId(int menuID, Connection connection) {
+        List<Dish> dishes = new ArrayList<>();
+        try(PreparedStatement psDishes = connection.prepareStatement
+                ("SELECT * FROM menu_dishes NATURAL JOIN menu NATURAL JOIN dishes WHERE menuid = ?")) {
+            psDishes.setInt(1, menuID);
+            ResultSet resultSet = psDishes.executeQuery();
+            while (resultSet.next()) {
+                Dish dish = createDish(connection, resultSet);
+                dishes.add(dish);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Exception occurred while selecting DISHES BY MENU ID ", e);
+            throw new RuntimeException(e);
+        }
+        return dishes;
+    }
+
+    //------------------------------------- CREATE DISH ---------------------------------------------------------------
+    private Dish createDish(Connection connection, ResultSet resultSet) throws SQLException {
+        Dish dish = new Dish();
+        dish.setDishId(resultSet.getInt("dishID"));
+        dish.setDishName(resultSet.getString("dish_name"));
+
+        dish.setDishCategory(createDishCategory(connection, resultSet));
+
+        dish.setPrice(resultSet.getDouble("price"));
+        dish.setWeight(resultSet.getDouble("weight"));
+
+        //dish.setMenuList(menuDaoJdbc.selectMenuByDishId(resultSet.getInt("dishID"), connection));
+        return dish;
+    }
+
+
+    //------------------------------------- CREATE DISH CATEGORY ---------------------------------------------------------------
     private DishCategory createDishCategory(Connection connection, ResultSet resultSet) throws SQLException {
         DishCategory dishCategory = new DishCategory();
         dishCategory.setDishcategoryId(resultSet.getInt("dishcategoryID"));
@@ -137,9 +165,12 @@ public class DishDaoJdbc implements DishDao{
     }
 
 
-    public DataSource getDataSource() {
-        return dataSource;
-    }
+
+
+
+
+
+//------------------------------------- SETTERS --------------------------------------------------------------------------------
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;

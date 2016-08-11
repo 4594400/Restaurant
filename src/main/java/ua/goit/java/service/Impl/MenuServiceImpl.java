@@ -1,15 +1,18 @@
 package ua.goit.java.service.Impl;
 
 import org.springframework.transaction.annotation.Transactional;
+import ua.goit.java.dao.DishDao;
 import ua.goit.java.dao.MenuDao;
 import ua.goit.java.model.Dish;
 import ua.goit.java.model.Menu;
 import ua.goit.java.service.MenuService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MenuServiceImpl implements MenuService {
     private MenuDao menuDao;
+    private DishDao dishDao;
 
     @Transactional
     @Override
@@ -37,17 +40,21 @@ public class MenuServiceImpl implements MenuService {
 
     @Transactional
     @Override
-    public int insertDishToMenu(Dish dish) {
-        return menuDao.insertDishToMenu(dish);
+    public int insertDishToMenu(Menu menu, Dish dish) {
+        return menuDao.insertDishToMenu(menu, dish);
     }
 
     @Transactional
     @Override
-    public int deleteDishFromMenuById(int dishId) {
-        return menuDao.deleteMenuById(dishId);
+    public int deleteDishFromMenu(Menu menu, Dish dish) {
+        return menuDao.deleteDishFromMenu(menu, dish);
     }
 
     public void setMenuDao(MenuDao menuDao) {
         this.menuDao = menuDao;
+    }
+
+    public void setDishDao(DishDao dishDao) {
+        this.dishDao = dishDao;
     }
 }

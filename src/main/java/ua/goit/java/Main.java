@@ -8,12 +8,16 @@ import ua.goit.java.controller.EmployeeController;
 import ua.goit.java.controller.MenuController;
 import ua.goit.java.controller.PhoneController;
 import ua.goit.java.model.*;
+import ua.goit.java.service.DishService;
+import ua.goit.java.service.MenuService;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
+    private DishService dishService;
+    private MenuService menuService;
     private EmployeeController employeeController;
     private PhoneController phoneController;
     private DishController dishController;
@@ -42,10 +46,14 @@ public class Main {
         //dishController.printResultDeletingDishById(24);
         //dishController.printDishByName("Пицца 4 сыра");
         //dishController.printAllDishes();
+        //dishController.printDishesByMenuId(1);
 
 
-        menuController.printInsertedMenu(createMenu());
-        menuController.printMenuByName("Пьянка");
+        //menuController.printInsertedMenu(createMenu());
+        //menuController.printMenuByName("Пьянка");
+        //menuController.printInsertedDishIntoMenu(menuService.selectMenuByName("Пьянка").get(0), dishService.selectDishByName("Винегрет").get(0));
+        menuController.printDeletedDishFromMenu(menuService.selectMenuByName("Пьянка").get(0), dishService.selectDishByName("Винегрет").get(0));
+        menuController.printAllMenu();
 
     }
 
@@ -59,6 +67,14 @@ public class Main {
         menu.setDishList(dishes);
 
         return menu;
+    }
+
+    public void setMenuService(MenuService menuService) {
+        this.menuService = menuService;
+    }
+
+    public void setDishService(DishService dishService) {
+        this.dishService = dishService;
     }
 
     public void setEmployeeController(EmployeeController employeeController) {

@@ -31,6 +31,16 @@ public class DishController {
         System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------");
     }
 
+    public void printDishesByMenuId(int menuId) {
+        System.out.println("-------------------- printDishesByMenuId ---------------------------------------------------------------------------------------------------------------");
+        dishService.selectDishesByMenuId(menuId).forEach(System.out::println);
+        System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------");
+    }
+
+
+
+
+
 
     public void setDishService(DishService dishService) {
         this.dishService = dishService;
