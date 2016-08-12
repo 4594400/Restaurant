@@ -25,7 +25,7 @@ public class MenuDaoJdbc implements MenuDao{
         int result;
         try(Connection connection = dataSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO menu (menu_name) VALUES (?)")) {
-            preparedStatement.setString(1,menu.getMenuName());
+            preparedStatement.setString(1, menu.getMenuName());
             result = preparedStatement.executeUpdate();
 
         } catch (SQLException e) {

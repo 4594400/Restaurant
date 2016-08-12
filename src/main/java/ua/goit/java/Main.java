@@ -3,10 +3,7 @@ package ua.goit.java;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import ua.goit.java.controller.DishController;
-import ua.goit.java.controller.EmployeeController;
-import ua.goit.java.controller.MenuController;
-import ua.goit.java.controller.PhoneController;
+import ua.goit.java.controller.*;
 import ua.goit.java.model.*;
 import ua.goit.java.service.DishService;
 import ua.goit.java.service.MenuService;
@@ -22,6 +19,7 @@ public class Main {
     private PhoneController phoneController;
     private DishController dishController;
     private MenuController menuController;
+    private IngredientController ingredientController;
 
     public static void main(String[] args) {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("application-context.xml");
@@ -52,8 +50,13 @@ public class Main {
         //menuController.printInsertedMenu(createMenu());
         //menuController.printMenuByName("Пьянка");
         //menuController.printInsertedDishIntoMenu(menuService.selectMenuByName("Пьянка").get(0), dishService.selectDishByName("Винегрет").get(0));
-        menuController.printDeletedDishFromMenu(menuService.selectMenuByName("Пьянка").get(0), dishService.selectDishByName("Винегрет").get(0));
-        menuController.printAllMenu();
+        //menuController.printDeletedDishFromMenu(menuService.selectMenuByName("Пьянка").get(0), dishService.selectDishByName("Винегрет").get(0));
+        //menuController.printAllMenu();
+
+        //ingredientController.printInsertedIngredient(new Ingredient("Сладкая картошка"));
+        ingredientController.printResultDeletingIngredientById(37);
+        //ingredientController.printIngredientsByName("Сладкая картошка");
+        //ingredientController.printAllIngredients();
 
     }
 
@@ -91,6 +94,10 @@ public class Main {
 
     public void setMenuController(MenuController menuController) {
         this.menuController = menuController;
+    }
+
+    public void setIngredientController(IngredientController ingredientController) {
+        this.ingredientController = ingredientController;
     }
 
     private Employee createNewEmployee(){

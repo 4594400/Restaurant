@@ -3,6 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+
     <bean id="employeeDao" class="ua.goit.java.dao.Impl.EmployeeDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
@@ -69,6 +70,19 @@
     </bean>
 
 
+    <bean id="ingredientDao" class="ua.goit.java.dao.Impl.IngredientDaoImpl">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="ingredientService" class="ua.goit.java.service.Impl.IngredientServiceImpl">
+        <property name="ingredientDao" ref="ingredientDao"/>
+    </bean>
+
+    <bean id="ingredientController" class="ua.goit.java.controller.IngredientController">
+        <property name="ingredientService" ref="ingredientService"/>
+    </bean>
+
+
 
 
 
@@ -80,6 +94,7 @@
         <property name="phoneController" ref="phoneController"/>
         <property name="dishController" ref="dishController"/>
         <property name="menuController" ref="menuController"/>
+        <property name="ingredientController" ref="ingredientController"/>
     </bean>
 
 
